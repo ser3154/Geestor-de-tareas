@@ -1,7 +1,8 @@
 // pruebas.js
-const Database = require('./DataBase');
+const Database = require('./database');
 const Usuario = require('./Usuario');
 const Tarea = require('./Tareas');
+const Categoria = require('./Categorias');
 
 async function ejecutarPruebas() {
     const database = new Database();
@@ -14,6 +15,7 @@ async function ejecutarPruebas() {
         // Instanciar las clases
         const usuarioDAO = new Usuario(database);
         const tareaDAO = new Tarea(database);
+        const categoriaDAO = new Categoria(database);
 
         // =====================
         // PRUEBAS DE USUARIOS
@@ -48,12 +50,85 @@ async function ejecutarPruebas() {
         await usuarioDAO.contarActivos();
 
         // =====================
+        // PRUEBAS DE CATEGORÍAS
+        // =====================
+        console.log('\n--- PRUEBAS DE CATEGORÍAS ---\n');
+
+        // 1. Crear categorías
+        console.log('1. Creando categorías...');
+        const catId1 = await categoriaDAO.crear(
+            'Escuela',
+            '#3B82F6',
+            'Tareas y proyectos escolares',
+            userId1
+        );
+
+        const catId2 = await categoriaDAO.crear(
+            'Personal',
+            '#10B981',
+            'Actividades personales',
+            userId1
+        );
+
+        const catId3 = await categoriaDAO.crear(
+            'Trabajo',
+            '#F59E0B',
+            'Tareas laborales',
+            userId1
+        );
+
+        const catId4 = await categoriaDAO.crear(
+            'Gimnasio',
+            '#EF4444',
+            'Rutinas de ejercicio',
+            userId2
+        );
+
+        // 2. Obtener categoría por ID
+        console.log('\n2. Obteniendo categoría por ID...');
+        await categoriaDAO.obtenerPorId(catId1);
+
+        // 3. Obtener todas las categorías de un usuario
+        console.log('\n3. Obteniendo categorías del usuario 1...');
+        await categoriaDAO.obtenerPorUsuario(userId1);
+
+        // 4. Buscar categoría por nombre
+        console.log('\n4. Buscando categoría "Escuela"...');
+        await categoriaDAO.buscarPorNombre(userId1, 'Escuela');
+
+        // 5. Obtener categorías por color
+        console.log('\n5. Obteniendo categorías con color azul...');
+        await categoriaDAO.obtenerPorColor(userId1, '#3B82F6');
+
+        // 6. Contar categorías de un usuario
+        console.log('\n6. Contando categorías del usuario 1...');
+        await categoriaDAO.contarPorUsuario(userId1);
+
+        // 7. Verificar si existe una categoría
+        console.log('\n7. Verificando si existe categoría "Escuela"...');
+        await categoriaDAO.existeNombre(userId1, 'Escuela');
+
+        // 8. Actualizar categoría
+        console.log('\n8. Actualizando descripción de categoría...');
+        await categoriaDAO.actualizar(catId2, {
+            descripcion: 'Actividades personales y hobbies'
+        });
+
+        // 9. Cambiar color de categoría
+        console.log('\n9. Cambiando color de categoría...');
+        await categoriaDAO.cambiarColor(catId3, '#FB923C');
+
+        // 10. Cambiar nombre de categoría
+        console.log('\n10. Cambiando nombre de categoría...');
+        await categoriaDAO.cambiarNombre(catId3, 'Oficina');
+
+        // =====================
         // PRUEBAS DE TAREAS
         // =====================
         console.log('\n--- PRUEBAS DE TAREAS ---\n');
 
-        // 1. Crear tareas
-        console.log('1. Creando tareas...');
+        // 1. Crear tareas usando las categorías creadas
+        console.log('1. Creando tareas con categorías...');
         const tareaId1 = await tareaDAO.crear({
             titulo: 'Completar asignación de Tópicos Web',
             descripcion: 'Desarrollar la capa de acceso a datos con Node.js',
@@ -62,7 +137,7 @@ async function ejecutarPruebas() {
             estado: 'en_progreso',
             fecha_vencimiento: new Date('2024-11-15'),
             categoria: {
-                categoriaId: '507f1f77bcf86cd799439011',
+                categoriaId: catId1,
                 nombre: 'Escuela'
             },
             recordatorios: [
@@ -80,7 +155,11 @@ async function ejecutarPruebas() {
             usuarioId: userId1,
             prioridad: 'alta',
             estado: 'pendiente',
-            fecha_vencimiento: new Date('2024-11-12')
+            fecha_vencimiento: new Date('2024-11-12'),
+            categoria: {
+                categoriaId: catId1,
+                nombre: 'Escuela'
+            }
         });
 
         const tareaId3 = await tareaDAO.crear({
@@ -88,7 +167,23 @@ async function ejecutarPruebas() {
             descripcion: 'Ir al gimnasio',
             usuarioId: userId2,
             prioridad: 'media',
-            estado: 'pendiente'
+            estado: 'pendiente',
+            categoria: {
+                categoriaId: catId4,
+                nombre: 'Gimnasio'
+            }
+        });
+
+        const tareaId4 = await tareaDAO.crear({
+            titulo: 'Leer libro de programación',
+            descripcion: 'Continuar con el libro de Node.js',
+            usuarioId: userId1,
+            prioridad: 'baja',
+            estado: 'pendiente',
+            categoria: {
+                categoriaId: catId2,
+                nombre: 'Personal'
+            }
         });
 
         // 2. Obtener tarea por ID
@@ -119,12 +214,12 @@ async function ejecutarPruebas() {
             estado: 'pendiente'
         });
 
-        // 8. Actualizar categoría
+        // 8. Actualizar categoría de tarea
         console.log('\n8. Actualizando categoría de tarea...');
         await tareaDAO.actualizarCategoria(
-            tareaId3, 
-            '507f1f77bcf86cd799439012', 
-            'Personal'
+            tareaId4, 
+            catId1, 
+            'Escuela'
         );
 
         // 9. Obtener estadísticas
@@ -144,9 +239,20 @@ async function ejecutarPruebas() {
         console.log('1. Eliminando una tarea...');
         await tareaDAO.eliminar(tareaId3);
 
-        // 2. Desactivar usuario (no eliminarlo)
-        console.log('\n2. Desactivando usuario...');
+        // 2. Eliminar una categoría
+        console.log('\n2. Eliminando una categoría...');
+        await categoriaDAO.eliminar(catId4);
+
+        // 3. Desactivar usuario (no eliminarlo)
+        console.log('\n3. Desactivando usuario...');
         await usuarioDAO.cambiarEstado(userId2, false);
+
+        // 4. Mostrar resumen final
+        console.log('\n--- RESUMEN FINAL ---');
+        console.log('Categorías restantes del usuario 1:');
+        await categoriaDAO.obtenerPorUsuario(userId1);
+        console.log('\nTareas restantes del usuario 1:');
+        await tareaDAO.obtenerPorUsuario(userId1);
 
         console.log('\n=== PRUEBAS COMPLETADAS ===\n');
 
