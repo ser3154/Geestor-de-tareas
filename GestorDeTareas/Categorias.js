@@ -1,5 +1,5 @@
 // Categoria.js
-const Database = require('./database');
+const Database = require('./DataBase');
 
 class Categoria {
     constructor(database) {

@@ -1,8 +1,9 @@
 // pruebas.js
-const Database = require('./database');
+const Database = require('./DataBase');
 const Usuario = require('./Usuario');
 const Tarea = require('./Tareas');
 const Categoria = require('./Categorias');
+const Nota = require('./Notas');
 
 async function ejecutarPruebas() {
     const database = new Database();
