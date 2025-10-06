@@ -4,6 +4,8 @@ const Usuario = require('./Usuario');
 const Tarea = require('./Tareas');
 const Categoria = require('./Categorias');
 const Nota = require('./Notas');
+const Logro = require('./Logros');
+const Racha = require('./Rachas');
 
 async function ejecutarPruebas() {
     const database = new Database();
@@ -17,6 +19,8 @@ async function ejecutarPruebas() {
         const usuarioDAO = new Usuario(database);
         const tareaDAO = new Tarea(database);
         const categoriaDAO = new Categoria(database);
+        const logroDAO = new Logro(database);
+        const rachaDAO = new Racha(database);
 
         // =====================
         // PRUEBAS DE USUARIOS
@@ -230,6 +234,60 @@ async function ejecutarPruebas() {
         // 10. Obtener tareas vencidas
         console.log('\n10. Obteniendo tareas vencidas...');
         await tareaDAO.obtenerVencidas(userId1);
+
+        // =====================
+        // PRUEBAS DE LOGROS
+        // =====================
+        console.log('\n--- PRUEBAS DE LOGROS ---\n');
+
+        // 1. Crear logro
+        const logroId = await logroDAO.crear(
+            userId1,
+            'Primer tarea completada',
+            'Completaste tu primera tarea',
+            '🏆',
+            new Date(),
+            { tipo: 'tareas_completadas', valor: 1 }
+        );
+
+        // 2. Obtener logro por ID
+        await logroDAO.obtenerPorId(logroId);
+
+        // 3. Obtener logros por usuario
+        await logroDAO.obtenerPorUsuario(userId1);
+
+        // 4. Actualizar logro
+        await logroDAO.actualizar(logroId, { nombre: '¡Primer tarea completada!' });
+
+        // 5. Eliminar logro
+        await logroDAO.eliminar(logroId);
+
+        // =====================
+        // PRUEBAS DE RACHAS
+        // =====================
+        console.log('\n--- PRUEBAS DE RACHAS ---\n');
+
+        // 1. Crear racha
+        const rachaId = await rachaDAO.crear(
+            userId1,
+            tareaId1,
+            3, // racha_actual
+            5, // racha_maxima
+            new Date(),
+            'activa'
+        );
+
+        // 2. Obtener racha por ID
+        await rachaDAO.obtenerPorId(rachaId);
+
+        // 3. Obtener rachas por usuario
+        await rachaDAO.obtenerPorUsuario(userId1);
+
+        // 4. Actualizar racha
+        await rachaDAO.actualizar(rachaId, { racha_actual: 4 });
+
+        // 5. Eliminar racha
+        await rachaDAO.eliminar(rachaId);
 
         // =====================
         // PRUEBAS DE DELETE
