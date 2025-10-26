@@ -1,15 +1,13 @@
 const express = require('express');
 
 const UsuarioDAO = require('../dataAccess/UsuarioDAO');
-
-
 const usuarioDAO = new UsuarioDAO();
 
 
 exports.crearUsuario = async (req, res) => {
     try {
        const usuarioCreado = await usuarioDAO.crear(req.body);
-       
+
         res.status(201).json(usuarioCreado);
     } catch (err) {
         res.status(500).json({ msg: 'Error al crear usuario', error: err.message });

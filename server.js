@@ -1,6 +1,8 @@
 const express = require('express');
 const Database = require('./config/DataBase');
 const usuarioRoutes = require('./routes/usuarioRoutes')
+const categoriaRoutes = require('./routes/categoriaRoutes')
+
 
 /*
 const categoriasRoutes = require('./modules/categoriasRoutes');
@@ -17,6 +19,8 @@ const server = async() =>{
         const app = express()
         app.use(express.json())
         app.use('/api/usuarios' , usuarioRoutes)
+        app.use('/api/categorias', categoriaRoutes)
+
         const port = 3000
         
         app.listen(port, () =>{
@@ -24,7 +28,7 @@ const server = async() =>{
         })
     } catch (err) {
      console.error('Fallo en la bd')
-     process.exit(1)   
+     console.error(err)   
     }
 }
 

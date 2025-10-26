@@ -15,6 +15,16 @@ class CategoriaDAO {
         }
     }
 
+    async obtenerTodasLasCategorias(){
+        try {
+            const categorias = await Categoria.find()
+            return categorias
+        } catch (error) {
+            console.log("Algo fallo")
+            throw error
+        }
+    }
+
     // READ - Obtener por ID
     async obtenerPorId(id) {
         try {
@@ -33,9 +43,9 @@ class CategoriaDAO {
 
     // READ - Obtener todas las de un usuario
     async obtenerPorUsuario(usuarioId) {
+        console.log(usuarioId)
         try {
-            const categorias = await Categoria.find({ usuarioId });
-            console.log(`✓ Se encontraron ${categorias.length} categorías para el usuario`);
+            const categorias = await Categoria.find({usuarioId :usuarioId});
             return categorias;
         } catch (error) {
             console.error('✗ Error al obtener categorías del usuario:', error);
