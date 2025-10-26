@@ -16,7 +16,6 @@ const usuarioSchema = new Schema({
         type: String,
         required: true,
         minlength: 8,
-        select: false // No devolver la contraseña por defecto en consultas
     },
     fecha_registro: {
         type: Date,
@@ -45,6 +44,7 @@ usuarioSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-const Usuario = mongoose.model('Usuario', usuarioSchema);
 
+
+const Usuario = mongoose.model('Usuario', usuarioSchema);
 module.exports = Usuario;

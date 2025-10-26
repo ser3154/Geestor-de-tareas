@@ -35,7 +35,7 @@ async function ejecutarPruebas() {
         console.log('\n--- PRUEBAS DE USUARIOS ---\n');
 
         console.log('1. Creando usuarios...');
-        userId1 = await usuarioDAO.crear('Jorge Elias', 'jorge@email.com');
+        userId1 = await usuarioDAO.crear('Sebastian Martinez Soqui', 'jorge@email.com');
         userId2 = await usuarioDAO.crear('Gabriel Medina', 'gabriel@email.com');
         
         console.log('\n2. Obteniendo usuario por ID...');
@@ -45,7 +45,7 @@ async function ejecutarPruebas() {
         await usuarioDAO.obtenerTodos();
 
         console.log('\n4. Actualizando usuario...');
-        await usuarioDAO.actualizar(userId1, { nombre: 'Jorge Eduardo Elias' });
+        await usuarioDAO.actualizar(userId1, { nombre: 'Sebast Eduardo Elias' });
         await usuarioDAO.obtenerPorId(userId1); // Verificamos el cambio
 
         console.log('\n--- PRUEBAS DE NOTAS ---\n');

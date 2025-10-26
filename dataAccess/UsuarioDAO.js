@@ -4,12 +4,11 @@ class UsuarioDAO {
     constructor() {}
 
     // CREATE
-    async crear(nombre, email) {
+    async crear(datosUsuario) {
         try {
-            const nuevoUsuario = { nombre, email };
-            const usuarioGuardado = await Usuario.create(nuevoUsuario);
+            const usuarioGuardado = await Usuario.create(datosUsuario);
             console.log(`✓ Usuario creado con ID: ${usuarioGuardado._id}`);
-            return usuarioGuardado._id;
+            return {msj: "Usuario registrado correctamente." , usuarioGuardado};
         } catch (error) {
             console.error('✗ Error al crear usuario:', error);
             throw error;
