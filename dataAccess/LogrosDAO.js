@@ -23,7 +23,7 @@ class LogroDAO {
         }
     }
 
-    // READ - Usa Logro.find()
+    // READ - Usa
     async obtenerPorUsuario(usuarioId) {
         try {
             const logros = await Logro.find({ usuarioId: usuarioId });
@@ -34,6 +34,16 @@ class LogroDAO {
             throw error;
         }
     }
+
+    async obtenerTodosLosLogros(){
+        try {
+            const logros = await Logro.find()
+            return logros
+        } catch (error) {
+            console.log("Algo fallo")
+            throw error
+            }
+        }
 
     // READ - Usa Logro.findById()
     async obtenerPorId(id) {

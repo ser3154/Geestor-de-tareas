@@ -2,14 +2,12 @@ const express = require('express');
 const Database = require('./config/DataBase');
 const usuarioRoutes = require('./routes/usuarioRoutes')
 const categoriaRoutes = require('./routes/categoriaRoutes')
-
+const logroRoutes = require('./routes/logroRoutes')
 
 /*
-const categoriasRoutes = require('./modules/categoriasRoutes');
 const tareasRoutes = require('./modules/tareasRoutes');
 const notasRoutes = require('./modules/notasRoutes');
 const rachasRoutes = require('./modules/rachasRoutes');
-const logrosRoutes = require('./modules/logrosRoutes');
 */
 
 const server = async() =>{
@@ -18,8 +16,11 @@ const server = async() =>{
         await database.conectar()
         const app = express()
         app.use(express.json())
+
+        app.use('/api/logros' , logroRoutes)
         app.use('/api/usuarios' , usuarioRoutes)
         app.use('/api/categorias', categoriaRoutes)
+        
 
         const port = 3000
         
