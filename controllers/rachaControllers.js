@@ -32,7 +32,7 @@ exports.crearRacha = async (req, res) => {
 
 exports.obtenerTodasLasRachas = async (req, res) => {
     try {
-        const { usuarioId } = req.query;
+        const { usuarioId } = req.params;
         if (!usuarioId) {
             return res.status(400).json({ mensaje: 'Se requiere query param usuarioId para listar rachas.' });
         }

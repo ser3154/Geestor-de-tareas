@@ -4,6 +4,7 @@ const usuarioRoutes = require('./routes/usuarioRoutes')
 const categoriaRoutes = require('./routes/categoriaRoutes')
 const logroRoutes = require('./routes/logroRoutes')
 const tareaRoutes = require('./routes/tareaRoutes')
+const rachaRoutes = require('./routes/rachaRoutes')
 
 /*
 const tareasRoutes = require('./modules/tareasRoutes');
@@ -18,6 +19,7 @@ const server = async() =>{
         const app = express()
         app.use(express.json())
 
+        app.use('/api/rachas', rachaRoutes)
         app.use('/api/logros' , logroRoutes)
         app.use('/api/usuarios' , usuarioRoutes)
         app.use('/api/categorias', categoriaRoutes)
