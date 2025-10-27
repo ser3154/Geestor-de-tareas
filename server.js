@@ -3,6 +3,7 @@ const Database = require('./config/DataBase');
 const usuarioRoutes = require('./routes/usuarioRoutes')
 const categoriaRoutes = require('./routes/categoriaRoutes')
 const logroRoutes = require('./routes/logroRoutes')
+const tareaRoutes = require('./routes/tareaRoutes')
 
 /*
 const tareasRoutes = require('./modules/tareasRoutes');
@@ -20,6 +21,7 @@ const server = async() =>{
         app.use('/api/logros' , logroRoutes)
         app.use('/api/usuarios' , usuarioRoutes)
         app.use('/api/categorias', categoriaRoutes)
+        app.use('/api/tareas' , tareaRoutes)
         
 
         const port = 3000

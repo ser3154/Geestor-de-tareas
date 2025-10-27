@@ -4,7 +4,7 @@ const router = express.Router();
 const logrosControllers = require('../controllers/logrosControllers');
 
 
-// ✅ IMPORTANTE: Las rutas específicas SIEMPRE van ANTES de las genéricas
+// IMPORTANTE: Las rutas específicas SIEMPRE van ANTES de las genéricas
 
 // 1. CREAR LOGRO
 router.post('/', logrosControllers.crearLogro);

@@ -42,7 +42,7 @@ exports.crearTarea = async (req, res) => {
 
 exports.obtenerTodasLasTareas = async (req, res) => {
     try {
-        const { usuarioId } = req.query;
+        const { usuarioId } = req.params;
         if (!usuarioId) {
             return res.status(400).json({ mensaje: 'Se requiere query param usuarioId para listar tareas.' });
         }
