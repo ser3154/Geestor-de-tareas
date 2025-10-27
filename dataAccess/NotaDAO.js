@@ -9,7 +9,7 @@ class NotaDAO {
             const nuevaNota = { contenido, tipo, usuarioId };
             const notaGuardada = await Nota.create(nuevaNota);
             console.log(`✓ Nota creada con ID: ${notaGuardada._id}`);
-            return notaGuardada._id;
+            return notaGuardada;
         } catch (error) {
             console.error('✗ Error al crear nota:', error);
             throw error;
