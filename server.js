@@ -2,6 +2,9 @@ const express = require('express');
 const Database = require('./config/DataBase');
 const usuarioRoutes = require('./routes/usuarioRoutes')
 const categoriaRoutes = require('./routes/categoriaRoutes')
+const notasRoutes = require('./routes/notasRoutes')
+const authRoutes = require('./routes/authRoutes')
+const errorHandler = require('./middleware/errorHandler')
 
 
 /*
@@ -18,8 +21,17 @@ const server = async() =>{
         await database.conectar()
         const app = express()
         app.use(express.json())
+        
+        // Rutas públicas (sin autenticación)
+        app.use('/api/auth', authRoutes)
+        
+        // Rutas protegidas (con autenticación)
         app.use('/api/usuarios' , usuarioRoutes)
         app.use('/api/categorias', categoriaRoutes)
+        app.use('/api/notas', notasRoutes)
+        
+        // Middleware de manejo de errores (debe ir al final)
+        app.use(errorHandler)
 
         const port = 3000
         
