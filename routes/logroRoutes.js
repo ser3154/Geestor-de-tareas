@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const logrosControllers = require('../controllers/logrosControllers');
-
+const authMiddleware = require('../middleware/authMiddleware');
+router.use(authMiddleware);
 
 // IMPORTANTE: Las rutas específicas SIEMPRE van ANTES de las genéricas
 

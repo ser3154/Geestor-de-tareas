@@ -1,11 +1,13 @@
 const express = require('express')
 const router = express.Router()
-
+const authMiddleware = require('../middleware/authMiddleware');
+router.use(authMiddleware);
 const categoriaControllers = require ('../controllers/categoriaControllers')
- 
-router.post('/' , categoriaControllers.crearCategoria)
-router.get('/'  , categoriaControllers.obtenerTodasLasCategorias)
 
+
+router.post('/' , categoriaControllers.crearCategoria)
+
+router.get('/'  , categoriaControllers.obtenerTodasLasCategorias)
 
 //ID DEL USUARIO
 router.get('/usuario/:usuarioId', categoriaControllers.obtenerCategoriasDeUsuario);
