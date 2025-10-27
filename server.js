@@ -22,15 +22,15 @@ const server = async () => {
         app.use(express.json());
 
         // Rutas públicas (sin autenticación)
-        app.use('/api/auth', authRoutes);
+        app.use('/api/v1/auth', authRoutes);
 
         // Rutas protegidas (con autenticación)
-        app.use('/api/usuarios', usuarioRoutes);
-        app.use('/api/categorias', categoriaRoutes);
-        app.use('/api/notas', notasRoutes);
-        app.use('/api/logros', logroRoutes);
-        app.use('/api/tareas', tareaRoutes);
-        app.use('/api/rachas', rachaRoutes);
+        app.use('/api/v1/usuarios', usuarioRoutes);
+        app.use('/api/v1/categorias', categoriaRoutes);
+        app.use('/api/v1/notas', notasRoutes);
+        app.use('/api/v1/logros', logroRoutes);
+        app.use('/api/v1/tareas', tareaRoutes);
+        app.use('/api/v1/rachas', rachaRoutes);
 
         // Middleware de manejo de errores (debe ir al final)
         app.use(errorHandler);
