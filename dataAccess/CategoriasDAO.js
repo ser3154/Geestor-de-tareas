@@ -107,4 +107,4 @@ class CategoriaDAO {
     }
 }
 
-module.exports = CategoriaDAO;
+module.exports = new CategoriaDAO();
