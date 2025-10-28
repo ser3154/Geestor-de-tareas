@@ -15,6 +15,21 @@ class UsuarioDAO {
         }
     }
 
+    async obtenerUsuarioPorEmail(email) {
+        try {
+            const usuario = await Usuario.findOne({ email: email });
+            if (usuario) {
+                console.log(`✓ Usuario encontrado por email: ${usuario.email}`);
+            } else {
+                console.log(`✗ Usuario con email ${email} no encontrado`);
+            }
+            return usuario;
+        } catch (error) {
+            console.error('✗ Error al obtener usuario por email:', error);
+            throw error;
+        }
+    }
+
     // READ - Obtener por ID
     async obtenerPorId(id) {
         try {
@@ -76,4 +91,4 @@ class UsuarioDAO {
     }
 }
 
-module.exports = UsuarioDAO;
+module.exports = new UsuarioDAO();

@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-const UsuarioDAO = require('../dataAccess/UsuarioDAO');
-const usuarioDAO = new UsuarioDAO();
+const usuarioDAO = require('../dataAccess/UsuarioDAO');
 
 // Clave secreta para JWT (en producción debería estar en variables de entorno)
 const JWT_SECRET = 'mi_clave_secreta_super_segura_2024';
