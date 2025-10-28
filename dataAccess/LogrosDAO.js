@@ -96,4 +96,4 @@ class LogroDAO {
     }
 }
 
-module.exports = LogroDAO;
+module.exports = new LogroDAO();
