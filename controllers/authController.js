@@ -110,4 +110,50 @@ exports.verificarToken = async (req, res) => {
     }
 };
 
+// Registro de usuario
+exports.register = async (req, res) => {
+    try {
+        const { nombre, email, password } = req.body;
+
+        if (!nombre || !email || !password) {
+            return res.status(400).json({ mensaje: 'Nombre, email y contraseña son obligatorios.' });
+        }
+
+        if (typeof password !== 'string' || password.length < 6) {
+            return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' });
+        }
+
+        // Verificar si el email ya existe
+        const usuarioExistente = await usuarioDAO.obtenerUsuarioPorEmail(email);
+        if (usuarioExistente) {
+            return res.status(409).json({ mensaje: 'Ya existe un usuario con ese email.' });
+        }
+
+        // Crear usuario
+        const resultado = await usuarioDAO.crear({ nombre, email, password });
+        const usuarioGuardado = resultado.usuarioGuardado || resultado;
+
+        // Generar token
+        const token = jwt.sign(
+            { userId: usuarioGuardado._id, email: usuarioGuardado.email },
+            JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.status(201).json({
+            mensaje: 'Usuario registrado correctamente',
+            token,
+            usuario: {
+                id: usuarioGuardado._id,
+                nombre: usuarioGuardado.nombre,
+                email: usuarioGuardado.email
+            }
+        });
+
+    } catch (err) {
+        console.error('Error en registro:', err);
+        res.status(500).json({ mensaje: 'Error interno del servidor al registrar usuario.', error: err.message });
+    }
+};
+
 module.exports.JWT_SECRET = JWT_SECRET;

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tareas - Organiza tu vida académica</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- VISTA DE AUTENTICACIÓN -->
+    <div id="auth-view" class="view active">
+        <div class="auth-container">
+            <!-- Sección de Bienvenida -->
+            <div class="auth-welcome">
+                <div class="welcome-content">
+                    <div class="welcome-header">
+                        <h1>¡Bienvenido!</h1>
+                        <p>Gestor de Tareas Académicas</p>
+                    </div>
+                    <div class="welcome-features">
+                        <div class="feature">
+                            <span class="feature-icon">✓</span>
+                            <h3>Organiza tus tareas</h3>
+                            <p>Crea y gestiona todas tus actividades en un solo lugar</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📋</span>
+                            <h3>Por categorías</h3>
+                            <p>Agrupa tus tareas por materias, proyectos y exámenes</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">⏰</span>
+                            <h3>Nunca olvides</h3>
+                            <p>Establece recordatorios y no dejes pasar tus plazos</p>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🎯</span>
+                            <h3>Logros y rachas</h3>
+                            <p>Desbloquea logros y mantén tu racha de tareas completas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Login -->
+            <div class="auth-form-container">
+                <form id="login-form" class="auth-form">
+                    <div class="form-header">
+                        <h2>Inicia Sesión</h2>
+                        <p>Accede a tu gestor de tareas</p>
+                    </div>
+
+                    <div id="auth-error" class="alert alert-danger hidden">
+                        <span class="alert-icon">⚠️</span>
+                        <span id="auth-error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="tu@email.com"
+                            required
+                        >
+                        <div class="form-error" id="email-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="••••••••"
+                            required
+                        >
+                        <div class="form-error" id="password-error"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-full">
+                        <span id="login-btn-text">Iniciar Sesión</span>
+                        <span class="spinner spinner-sm hidden" id="login-spinner"></span>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p id="auth-toggle-text">¿No tienes cuenta? <a href="#" id="show-register" class="link">Crear cuenta</a></p>
+                    <p id="register-toggle-text" class="hidden">¿Ya tienes cuenta? <a href="#" id="show-login" class="link">Iniciar sesión</a></p>
+                </div>
+            </div>
+            
+            <!-- Formulario de Registro (oculto por defecto) -->
+            <div class="auth-form-container hidden" id="register-container">
+                <form id="register-form" class="auth-form">
+                    <div class="form-header">
+                        <h2>Crear Cuenta</h2>
+                        <p>Regístrate para comenzar a usar el gestor</p>
+                    </div>
+
+                    <div id="register-error" class="alert alert-danger hidden">
+                        <span class="alert-icon">⚠️</span>
+                        <span id="register-error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-nombre">Nombre</label>
+                        <input type="text" id="reg-nombre" name="nombre" placeholder="Tu nombre" required>
+                        <div class="form-error" id="reg-nombre-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-email">Email</label>
+                        <input type="email" id="reg-email" name="email" placeholder="tu@email.com" required>
+                        <div class="form-error" id="reg-email-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-password">Contraseña</label>
+                        <input type="password" id="reg-password" name="password" placeholder="Mínimo 6 caracteres" required>
+                        <div class="form-error" id="reg-password-error"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-full" id="register-btn">
+                        <span id="register-btn-text">Crear Cuenta</span>
+                        <span class="spinner spinner-sm hidden" id="register-spinner"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA PRINCIPAL DEL DASHBOARD -->
+    <div id="main-view" class="view">
+        <!-- NAVEGACIÓN LATERAL -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">📝</div>
+                    <div>
+                        <h3>Gestor Tareas</h3>
+                        <p>v1.0</p>
+                    </div>
+                </div>
+                <button id="sidebar-close" class="sidebar-close hidden-mobile">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-link active" data-view="dashboard">
+                            <span class="nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="tareas">
+                            <span class="nav-icon">✓</span>
+                            <span>Mis Tareas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="categorias">
+                            <span class="nav-icon">📂</span>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="notas">
+                            <span class="nav-icon">📌</span>
+                            <span>Notas Rápidas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="logros">
+                            <span class="nav-icon">🏆</span>
+                            <span>Logros</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn btn-outline btn-full">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="main-header">
+                <button id="menu-toggle" class="menu-toggle">☰</button>
+                <h1 id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <div class="user-info">
+                        <span id="user-name">Usuario</span>
+                        <div class="user-avatar">U</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ALERTAS -->
+            <div id="alerts-container" class="alerts-container"></div>
+
+            <!-- CONTENIDO DE VISTAS -->
+            <div class="content">
+                <!-- VISTA: DASHBOARD -->
+                <section id="dashboard-view" class="view-section active">
+                    <div class="dashboard-grid">
+                        <!-- Tarjeta de Resumen -->
+                        <div class="card card-colored dashboard-card">
+                            <div class="card-body">
+                                <div class="stat">
+                                    <span class="stat-label">Tareas Totales</span>
+                                    <span class="stat-value" id="total-tasks">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-colored dashboard-card" style="background: linear-gradient(135deg, #7C3AED, #EC4899);">
+                            <div class="card-body">
+                                <div class="stat">
+                                    <span class="stat-label">Pendientes</span>
+                                    <span class="stat-value" id="pending-tasks">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-colored dashboard-card" style="background: linear-gradient(135deg, #10B981, #059669);">
+                            <div class="card-body">
+                                <div class="stat">
+                                    <span class="stat-label">Completadas</span>
+                                    <span class="stat-value" id="completed-tasks">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-colored dashboard-card" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                            <div class="card-body">
+                                <div class="stat">
+                                    <span class="stat-label">Racha Actual</span>
+                                    <span class="stat-value" id="current-streak">0🔥</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Tareas Próximas -->
+                    <div class="mt-lg">
+                        <div class="section-header">
+                            <h2>Tareas Próximas a Vencer</h2>
+                            <a href="#" class="link" data-view="tareas">Ver todas →</a>
+                        </div>
+                        <div id="upcoming-tasks" class="tasks-list">
+                            <p class="empty-state">Carga tus tareas para comenzar 🎯</p>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Categorías Principales -->
+                    <div class="mt-lg">
+                        <div class="section-header">
+                            <h2>Categorías</h2>
+                            <a href="#" class="link" data-view="categorias">Administrar →</a>
+                        </div>
+                        <div id="dashboard-categories" class="categories-grid">
+                            <p class="empty-state">Crea categorías para organizar tus tareas 📂</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VISTA: TAREAS -->
+                <section id="tareas-view" class="view-section">
+                    <div class="section-header">
+                        <h2>Mis Tareas</h2>
+                        <button class="btn btn-secondary" id="new-task-btn">+ Nueva Tarea</button>
+                    </div>
+
+                    <div class="tareas-filters">
+                        <select id="filter-category" class="form-control">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                        <select id="filter-status" class="form-control">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="completada">Completadas</option>
+                        </select>
+                    </div>
+
+                    <div id="tareas-list" class="tasks-list">
+                        <p class="empty-state">No hay tareas aún. ¡Crea una nueva! 🎯</p>
+                    </div>
+                </section>
+
+                <!-- VISTA: CATEGORÍAS -->
+                <section id="categorias-view" class="view-section">
+                    <div class="section-header">
+                        <h2>Categorías</h2>
+                        <button class="btn btn-secondary" id="new-category-btn">+ Nueva Categoría</button>
+                    </div>
+
+                    <div id="categorias-grid" class="categories-grid">
+                        <p class="empty-state">No hay categorías aún. ¡Crea una! 📂</p>
+                    </div>
+                </section>
+
+                <!-- VISTA: NOTAS RÁPIDAS -->
+                <section id="notas-view" class="view-section">
+                    <div class="section-header">
+                        <h2>Notas Rápidas</h2>
+                        <button class="btn btn-secondary" id="new-note-btn">+ Nueva Nota</button>
+                    </div>
+
+                    <div id="notas-grid" class="notes-grid">
+                        <p class="empty-state">No hay notas aún. ¡Crea una! 📝</p>
+                    </div>
+                </section>
+
+                <!-- VISTA: LOGROS -->
+                <section id="logros-view" class="view-section">
+                    <div class="section-header">
+                        <h2>Mis Logros 🏆</h2>
+                    </div>
+
+                    <div id="logros-container" class="logros-container">
+                        <p class="empty-state">Completa tareas para desbloquear logros ✨</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: NUEVA/EDITAR TAREA -->
+    <div id="task-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="task-modal-title">Nueva Tarea</h2>
+                <button class="modal-close" data-modal="task-modal">✕</button>
+            </div>
+            <form id="task-form" class="modal-body">
+                <div class="form-group">
+                    <label for="task-nombre">Nombre de la Tarea</label>
+                    <input 
+                        type="text" 
+                        id="task-nombre" 
+                        name="nombre" 
+                        placeholder="Ej: Hacer el proyecto de matemáticas"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="task-descripcion">Descripción</label>
+                    <textarea 
+                        id="task-descripcion" 
+                        name="descripcion" 
+                        placeholder="Detalles adicionales de la tarea..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-categoria">Categoría</label>
+                    <select id="task-categoria" name="categoria">
+                        <option value="">Sin categoría</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-fecha">Fecha de Vencimiento</label>
+                    <input 
+                        type="date" 
+                        id="task-fecha" 
+                        name="fecha_vencimiento"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="task-prioridad">Prioridad</label>
+                    <select id="task-prioridad" name="prioridad">
+                        <option value="baja">Baja</option>
+                        <option value="media" selected>Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="task-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVA/EDITAR CATEGORÍA -->
+    <div id="category-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="category-modal-title">Nueva Categoría</h2>
+                <button class="modal-close" data-modal="category-modal">✕</button>
+            </div>
+            <form id="category-form" class="modal-body">
+                <div class="form-group">
+                    <label for="category-nombre">Nombre</label>
+                    <input 
+                        type="text" 
+                        id="category-nombre" 
+                        name="nombre" 
+                        placeholder="Ej: Matemáticas"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="category-descripcion">Descripción</label>
+                    <textarea 
+                        id="category-descripcion" 
+                        name="descripcion" 
+                        placeholder="Descripción de la categoría..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="category-color">Color</label>
+                    <div class="color-picker">
+                        <input type="color" id="category-color" name="color" value="#1E3A8A">
+                        <span id="color-preview" class="color-preview"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="category-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVA NOTA -->
+    <div id="note-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="note-modal-title">Nueva Nota</h2>
+                <button class="modal-close" data-modal="note-modal">✕</button>
+            </div>
+            <form id="note-form" class="modal-body">
+                <div class="form-group">
+                    <label for="note-contenido">Contenido</label>
+                    <textarea 
+                        id="note-contenido" 
+                        name="contenido" 
+                        placeholder="Escribe tu nota aquí..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="note-color">Color de la nota</label>
+                    <div class="color-picker">
+                        <input type="color" id="note-color" name="color" value="#B8FF00">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="note-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Nota</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/tareas.js"></script>
+    <script src="js/categorias.js"></script>
+    <script src="js/notas.js"></script>
+    <script src="js/logros.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
