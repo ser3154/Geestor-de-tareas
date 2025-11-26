@@ -10,186 +10,13 @@
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-    <!-- VISTA DE AUTENTICACIÓN -->
-    <div id="auth-view" class="view active">
-        <div class="auth-container">
-            <!-- Sección de Bienvenida -->
-            <div class="auth-welcome">
-                <div class="welcome-content">
-                    <div class="welcome-header">
-                        <h1>¡Bienvenido!</h1>
-                        <p>Gestor de Tareas Académicas</p>
-                    </div>
-                    <div class="welcome-features">
-                        <div class="feature">
-                            <span class="feature-icon">✓</span>
-                            <h3>Organiza tus tareas</h3>
-                            <p>Crea y gestiona todas tus actividades en un solo lugar</p>
-                        </div>
-                        <div class="feature">
-                            <span class="feature-icon">📋</span>
-                            <h3>Por categorías</h3>
-                            <p>Agrupa tus tareas por materias, proyectos y exámenes</p>
-                        </div>
-                        <div class="feature">
-                            <span class="feature-icon">⏰</span>
-                            <h3>Nunca olvides</h3>
-                            <p>Establece recordatorios y no dejes pasar tus plazos</p>
-                        </div>
-                        <div class="feature">
-                            <span class="feature-icon">🎯</span>
-                            <h3>Logros y rachas</h3>
-                            <p>Desbloquea logros y mantén tu racha de tareas completas</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Formulario de Login -->
-            <div class="auth-form-container">
-                <form id="login-form" class="auth-form">
-                    <div class="form-header">
-                        <h2>Inicia Sesión</h2>
-                        <p>Accede a tu gestor de tareas</p>
-                    </div>
-
-                    <div id="auth-error" class="alert alert-danger hidden">
-                        <span class="alert-icon">⚠️</span>
-                        <span id="auth-error-message"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder="tu@email.com"
-                            required
-                        >
-                        <div class="form-error" id="email-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Contraseña</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="••••••••"
-                            required
-                        >
-                        <div class="form-error" id="password-error"></div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg btn-full">
-                        <span id="login-btn-text">Iniciar Sesión</span>
-                        <span class="spinner spinner-sm hidden" id="login-spinner"></span>
-                    </button>
-                </form>
-
-                <div class="auth-footer">
-                    <p id="auth-toggle-text">¿No tienes cuenta? <a href="#" id="show-register" class="link">Crear cuenta</a></p>
-                    <p id="register-toggle-text" class="hidden">¿Ya tienes cuenta? <a href="#" id="show-login" class="link">Iniciar sesión</a></p>
-                </div>
-            </div>
-            
-            <!-- Formulario de Registro (oculto por defecto) -->
-            <div class="auth-form-container hidden" id="register-container">
-                <form id="register-form" class="auth-form">
-                    <div class="form-header">
-                        <h2>Crear Cuenta</h2>
-                        <p>Regístrate para comenzar a usar el gestor</p>
-                    </div>
-
-                    <div id="register-error" class="alert alert-danger hidden">
-                        <span class="alert-icon">⚠️</span>
-                        <span id="register-error-message"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-nombre">Nombre</label>
-                        <input type="text" id="reg-nombre" name="nombre" placeholder="Tu nombre" required>
-                        <div class="form-error" id="reg-nombre-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-email">Email</label>
-                        <input type="email" id="reg-email" name="email" placeholder="tu@email.com" required>
-                        <div class="form-error" id="reg-email-error"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reg-password">Contraseña</label>
-                        <input type="password" id="reg-password" name="password" placeholder="Mínimo 6 caracteres" required>
-                        <div class="form-error" id="reg-password-error"></div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg btn-full" id="register-btn">
-                        <span id="register-btn-text">Crear Cuenta</span>
-                        <span class="spinner spinner-sm hidden" id="register-spinner"></span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- VISTA DE AUTENTICACIÓN -> ahora gestionada por Web Component -->
+    <auth-component></auth-component>
 
     <!-- VISTA PRINCIPAL DEL DASHBOARD -->
     <div id="main-view" class="view">
-        <!-- NAVEGACIÓN LATERAL -->
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <div class="logo-icon">📝</div>
-                    <div>
-                        <h3>Gestor Tareas</h3>
-                        <p>v1.0</p>
-                    </div>
-                </div>
-                <button id="sidebar-close" class="sidebar-close hidden-mobile">✕</button>
-            </div>
-
-            <nav class="sidebar-nav">
-                <ul>
-                    <li>
-                        <a href="#" class="nav-link active" data-view="dashboard">
-                            <span class="nav-icon">📊</span>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="tareas">
-                            <span class="nav-icon">✓</span>
-                            <span>Mis Tareas</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="categorias">
-                            <span class="nav-icon">📂</span>
-                            <span>Categorías</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="notas">
-                            <span class="nav-icon">📌</span>
-                            <span>Notas Rápidas</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link" data-view="logros">
-                            <span class="nav-icon">🏆</span>
-                            <span>Logros</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <div class="sidebar-footer">
-                <button id="logout-btn" class="btn btn-outline btn-full">
-                    Cerrar Sesión
-                </button>
-            </div>
-        </aside>
+        <!-- NAVEGACIÓN LATERAL -> ahora gestionada por Web Component -->
+        <app-sidebar></app-sidebar>
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="main-content">
@@ -202,6 +29,7 @@
                         <span id="user-name">Usuario</span>
                         <div class="user-avatar">U</div>
                     </div>
+                    <geo-button></geo-button>
                 </div>
             </header>
 
@@ -474,8 +302,191 @@
         </div>
     </div>
 
+    <!-- Templates para Web Components -->
+    <template id="auth-template">
+        <div id="auth-view" class="view active">
+            <div class="auth-container">
+                <!-- Sección de Bienvenida -->
+                <div class="auth-welcome">
+                    <div class="welcome-content">
+                        <div class="welcome-header">
+                            <h1>¡Bienvenido!</h1>
+                            <p>Gestor de Tareas Académicas</p>
+                        </div>
+                        <div class="welcome-features">
+                            <div class="feature">
+                                <span class="feature-icon">✓</span>
+                                <h3>Organiza tus tareas</h3>
+                                <p>Crea y gestiona todas tus actividades en un solo lugar</p>
+                            </div>
+                            <div class="feature">
+                                <span class="feature-icon">📋</span>
+                                <h3>Por categorías</h3>
+                                <p>Agrupa tus tareas por materias, proyectos y exámenes</p>
+                            </div>
+                            <div class="feature">
+                                <span class="feature-icon">⏰</span>
+                                <h3>Nunca olvides</h3>
+                                <p>Establece recordatorios y no dejes pasar tus plazos</p>
+                            </div>
+                            <div class="feature">
+                                <span class="feature-icon">🎯</span>
+                                <h3>Logros y rachas</h3>
+                                <p>Desbloquea logros y mantén tu racha de tareas completas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Login -->
+                <div class="auth-form-container">
+                    <form id="login-form" class="auth-form">
+                        <div class="form-header">
+                            <h2>Inicia Sesión</h2>
+                            <p>Accede a tu gestor de tareas</p>
+                        </div>
+
+                        <div id="auth-error" class="alert alert-danger hidden">
+                            <span class="alert-icon">⚠️</span>
+                            <span id="auth-error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="tu@email.com"
+                                required
+                            >
+                            <div class="form-error" id="email-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <div class="form-error" id="password-error"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-full">
+                            <span id="login-btn-text">Iniciar Sesión</span>
+                            <span class="spinner spinner-sm hidden" id="login-spinner"></span>
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p id="auth-toggle-text">¿No tienes cuenta? <a href="#" id="show-register" class="link">Crear cuenta</a></p>
+                        <p id="register-toggle-text" class="hidden">¿Ya tienes cuenta? <a href="#" id="show-login" class="link">Iniciar sesión</a></p>
+                    </div>
+                </div>
+                
+                <!-- Formulario de Registro (oculto por defecto) -->
+                <div class="auth-form-container hidden" id="register-container">
+                    <form id="register-form" class="auth-form">
+                        <div class="form-header">
+                            <h2>Crear Cuenta</h2>
+                            <p>Regístrate para comenzar a usar el gestor</p>
+                        </div>
+
+                        <div id="register-error" class="alert alert-danger hidden">
+                            <span class="alert-icon">⚠️</span>
+                            <span id="register-error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-nombre">Nombre</label>
+                            <input type="text" id="reg-nombre" name="nombre" placeholder="Tu nombre" required>
+                            <div class="form-error" id="reg-nombre-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-email">Email</label>
+                            <input type="email" id="reg-email" name="email" placeholder="tu@email.com" required>
+                            <div class="form-error" id="reg-email-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-password">Contraseña</label>
+                            <input type="password" id="reg-password" name="password" placeholder="Mínimo 6 caracteres" required>
+                            <div class="form-error" id="reg-password-error"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-full" id="register-btn">
+                            <span id="register-btn-text">Crear Cuenta</span>
+                            <span class="spinner spinner-sm hidden" id="register-spinner"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="sidebar-template">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">📝</div>
+                    <div>
+                        <h3>Gestor Tareas</h3>
+                        <p>v1.0</p>
+                    </div>
+                </div>
+                <button id="sidebar-close" class="sidebar-close hidden-mobile">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-link active" data-view="dashboard">
+                            <span class="nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="tareas">
+                            <span class="nav-icon">✓</span>
+                            <span>Mis Tareas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="categorias">
+                            <span class="nav-icon">📂</span>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="notas">
+                            <span class="nav-icon">📌</span>
+                            <span>Notas Rápidas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-view="logros">
+                            <span class="nav-icon">🏆</span>
+                            <span>Logros</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn btn-outline btn-full">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+    </template>
+
     <!-- Scripts -->
     <script src="js/api.js"></script>
+    <script src="js/components/webcomponents.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/dashboard.js"></script>
