@@ -37,8 +37,9 @@ class GeoButton extends HTMLElement {
             </div>
         `;
 
-        const btn = this.querySelector('#geo-btn');
-        btn.addEventListener('click', () => this.requestLocation(btn));
+        this._btn = this.querySelector('#geo-btn');
+        this._onClick = () => this.requestLocation(this._btn);
+        this._btn.addEventListener('click', this._onClick);
     }
 
     requestLocation(buttonEl) {
@@ -59,9 +60,11 @@ class GeoButton extends HTMLElement {
                 buttonEl.textContent = originalText;
 
                 // Emitir evento con detalles para que la app pueda usar la ubicación
+                // `composed: true` permite que el evento atraviese shadow DOM si se usa.
                 this.dispatchEvent(new CustomEvent('geo:obtained', {
                     detail: { latitude: c.latitude, longitude: c.longitude },
-                    bubbles: true
+                    bubbles: true,
+                    composed: true
                 }));
             },
             (err) => {
@@ -85,6 +88,13 @@ class GeoButton extends HTMLElement {
             setTimeout(() => el.remove(), 3500);
         } else {
             alert(msg);
+        }
+    }
+
+    disconnectedCallback() {
+        // Limpiar listeners cuando el componente se remueve del DOM
+        if (this._btn && this._onClick) {
+            this._btn.removeEventListener('click', this._onClick);
         }
     }
 }
