@@ -1,4 +1,5 @@
-const express = require('express');
+﻿const express = require('express');
+const path = require('path');
 const Database = require('./config/DataBase');
 
 // Rutas principales
@@ -21,6 +22,20 @@ const server = async () => {
         const app = express();
         app.use(express.json());
 
+        // ========================================
+        // SERVIR ARCHIVOS ESTÁTICOS (FRONTEND)
+        // ========================================
+        app.use(express.static(path.join(__dirname, 'frontend')));
+
+        // Ruta principal - servir index.html
+        app.get('/', (req, res) => {
+            res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+        });
+
+        // ========================================
+        // RUTAS DE LA API
+        // ========================================
+
         // Rutas públicas (sin autenticación)
         app.use('/api/v1/auth', authRoutes);
 
@@ -37,13 +52,16 @@ const server = async () => {
 
         const port = 3000;
         app.listen(port, () => {
-            console.log(`Servidor escuchando en el puerto: ${port}`);
+            console.log('=================================');
+            console.log('🚀 Servidor iniciado exitosamente');
+            console.log('📡 API: http://localhost:' + port + '/api/v1');
+            console.log('🌐 Frontend: http://localhost:' + port);
+            console.log('=================================');
         });
     } catch (err) {
-        console.error('Fallo en la base de datos');
+        console.error('❌ Fallo en la base de datos');
         console.error(err);
     }
 };
 
 server();
-

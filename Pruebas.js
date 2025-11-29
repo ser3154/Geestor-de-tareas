@@ -1,7 +1,7 @@
 // --- IMPORTS ---
 const Database = require('./config/DataBase');
 const TareaDAO = require('./dataAccess/TareaDAO')
-const CategoriaDAO = require('./dataAccess/CategoriasDAO');
+const categoriaDAO = require('./dataAccess/CategoriasDAO');
 const LogroDAO = require('./dataAccess/LogrosDAO');
 const UsuarioDAO = require('./dataAccess/UsuarioDAO'); 
 const NotaDAO = require('./dataAccess/NotaDAO');
@@ -22,9 +22,6 @@ async function ejecutarPruebas() {
 
 
         // DAOs refactorizados con Mongoose
-        const rachaDAO = new RachaDAO();
-        const categoriaDAO = new CategoriaDAO();
-        const logroDAO = new LogroDAO();
         const usuarioDAO = new UsuarioDAO();
         const notaDAO = new NotaDAO()
         const tareaDAO = new TareaDAO();
