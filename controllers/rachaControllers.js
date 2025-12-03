@@ -98,11 +98,18 @@ exports.eliminarRacha = async (req, res) => {
         if (!eliminado) {
             return res.status(404).json({ mensaje: 'Racha no encontrada.' });
         }
-        res.status(204).send();
+        // ✅ FIX: Devolver JSON en lugar de res.status(204).send()
+        res.status(200).json({ 
+            mensaje: 'Racha eliminada correctamente',
+            id: req.params.id 
+        });
     } catch (err) {
         if (err.name === 'CastError') {
             return res.status(400).json({ mensaje: 'El ID proporcionado no es válido.' });
         }
-        res.status(500).json({ mensaje: 'Error interno del servidor al eliminar la racha.', error: err.message });
+        res.status(500).json({ 
+            mensaje: 'Error interno del servidor al eliminar la racha.', 
+            error: err.message 
+        });
     }
 };

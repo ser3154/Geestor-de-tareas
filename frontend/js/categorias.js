@@ -47,6 +47,15 @@ class CategoriasManager {
                 }
             });
         }
+
+        // ✅ NUEVO: Escuchar eventos de los Web Components
+        document.addEventListener('category:edit', (e) => {
+            this.editCategory(e.detail.id);
+        });
+
+        document.addEventListener('category:delete', (e) => {
+            this.deleteCategory(e.detail.id);
+        });
     }
 
     static newCategory() {
@@ -129,7 +138,12 @@ class CategoriasManager {
     }
 
     static async deleteCategory(id) {
-        const tareas = appState.tareas.filter(t => t.categoriaId === id);
+        // Verificar si hay tareas usando esta categoría
+        const tareas = appState.tareas.filter(t => {
+            const tareaCatId = t.categoriaId || 
+                (t.categoria && (t.categoria.categoriaId || t.categoria._id));
+            return tareaCatId === id;
+        });
         
         if (tareas.length > 0) {
             UIHelpers.showAlert(
@@ -150,6 +164,7 @@ class CategoriasManager {
 
                 this.renderCategorias();
                 DashboardManager.renderDashboard();
+                TareasManager.updateFilterCategories();
 
             } catch (error) {
                 UIHelpers.showAlert(error.message, 'danger');
@@ -165,29 +180,36 @@ class CategoriasManager {
             return;
         }
 
-        container.innerHTML = appState.categorias.map(categoria => {
-            const tasksCount = appState.tareas.filter(t => t.categoriaId === categoria._id).length;
-            const completedCount = appState.tareas.filter(
-                t => t.categoriaId === categoria._id && t.estado === 'completada'
-            ).length;
+        // ✅ RENDERIZAR USANDO WEB COMPONENTS
+        container.innerHTML = '';
+        appState.categorias.forEach(categoria => {
+            // Calcular estadísticas de la categoría
+            const tasksCount = appState.tareas.filter(t => {
+                const tareaCatId = t.categoriaId || 
+                    (t.categoria && (t.categoria.categoriaId || t.categoria._id));
+                return tareaCatId === categoria._id;
+            }).length;
 
-            const bgColor = categoria.color || '#1E3A8A';
+            const completedCount = appState.tareas.filter(t => {
+                const tareaCatId = t.categoriaId || 
+                    (t.categoria && (t.categoria.categoriaId || t.categoria._id));
+                return tareaCatId === categoria._id && t.estado === 'completada';
+            }).length;
 
-            return `
-                <div class="category-card" style="background: ${bgColor};">
-                    <div class="category-header">
-                        <h3 class="category-name">${categoria.nombre}</h3>
-                    </div>
-                    ${categoria.descripcion ? `<p class="category-description">${categoria.descripcion}</p>` : ''}
-                    <div class="category-stats">
-                        <span>📊 ${completedCount}/${tasksCount} completadas</span>
-                    </div>
-                    <div class="category-actions">
-                        <button class="category-btn" onclick="CategoriasManager.editCategory('${categoria._id}')">Editar</button>
-                        <button class="category-btn" onclick="CategoriasManager.deleteCategory('${categoria._id}')">Eliminar</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
+            // Crear objeto de categoría con todos los datos necesarios
+            const categoriaParaComponente = {
+                _id: categoria._id,
+                nombre: categoria.nombre,
+                descripcion: categoria.descripcion || '',
+                color: categoria.color || '#1E3A8A'
+            };
+
+            // Crear el Web Component
+            const categoryCard = document.createElement('category-card');
+            categoryCard.setAttribute('data-category', JSON.stringify(categoriaParaComponente));
+            categoryCard.setAttribute('tasks-count', tasksCount);
+            categoryCard.setAttribute('completed-count', completedCount);
+            container.appendChild(categoryCard);
+        });
     }
 }

@@ -11,17 +11,27 @@ class LogrosManager {
             return;
         }
 
-        container.innerHTML = appState.logros.map(logro => {
-            const fecha = logro.fecha_otorgado ? new Date(logro.fecha_otorgado) : new Date();
+        // ✅ RENDERIZAR USANDO WEB COMPONENTS
+        container.innerHTML = '';
+        appState.logros.forEach(logro => {
+            // Determinar si el logro está bloqueado o desbloqueado
+            const isLocked = !logro.fecha_otorgado;
 
-            return `
-                <div class="logro-item">
-                    <div class="logro-icon">${logro.icono || '🏆'}</div>
-                    <div class="logro-name">${logro.nombre}</div>
-                    <div class="logro-description">${logro.descripcion}</div>
-                    ${logro.fecha_otorgado ? `<div class="logro-date">Desbloqueado: ${UIHelpers.formatDate(fecha)}</div>` : ''}
-                </div>
-            `;
-        }).join('');
+            // Preparar objeto de logro para el componente
+            const logroParaComponente = {
+                _id: logro._id,
+                nombre: logro.nombre || 'Logro sin nombre',
+                descripcion: logro.descripcion || 'Sin descripción',
+                icono: logro.icono || '🏆',
+                fecha_otorgado: logro.fecha_otorgado || null,
+                criterio: logro.criterio || {}
+            };
+
+            // Crear el Web Component
+            const logroCard = document.createElement('logro-card');
+            logroCard.setAttribute('data-logro', JSON.stringify(logroParaComponente));
+            logroCard.setAttribute('locked', isLocked);
+            container.appendChild(logroCard);
+        });
     }
 }

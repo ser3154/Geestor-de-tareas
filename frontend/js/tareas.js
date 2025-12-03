@@ -50,6 +50,19 @@ class TareasManager {
                 }
             });
         }
+
+        // ✅ NUEVO: Escuchar eventos de los Web Components
+        document.addEventListener('task:toggle', (e) => {
+            this.toggleTask(e.detail.id);
+        });
+
+        document.addEventListener('task:edit', (e) => {
+            this.editTask(e.detail.id);
+        });
+
+        document.addEventListener('task:delete', (e) => {
+            this.deleteTask(e.detail.id);
+        });
     }
 
     static newTask() {
@@ -73,12 +86,14 @@ class TareasManager {
         
         document.getElementById('task-nombre').value = tarea.nombre || tarea.titulo || '';
         document.getElementById('task-descripcion').value = tarea.descripcion || '';
+        
         // Compatibilidad: la categoría puede venir como tarea.categoria.categoriaId o tarea.categoriaId
         const categoriaValue = tarea.categoriaId || (tarea.categoria && (tarea.categoria.categoriaId || tarea.categoria._id)) || '';
         const taskCategoriaEl = document.getElementById('task-categoria');
         if (taskCategoriaEl) taskCategoriaEl.value = categoriaValue;
 
-        document.getElementById('task-fecha').value = (tarea.fecha_vencimiento || tarea.fecha_vencimiento).split ? tarea.fecha_vencimiento.split('T')[0] : '';
+        const fechaVencimiento = tarea.fecha_vencimiento || tarea.fecha_vencimiento;
+        document.getElementById('task-fecha').value = fechaVencimiento && fechaVencimiento.split ? fechaVencimiento.split('T')[0] : '';
         document.getElementById('task-prioridad').value = tarea.prioridad || 'media';
 
         document.getElementById('task-modal-title').textContent = 'Editar Tarea';
@@ -109,6 +124,7 @@ class TareasManager {
                     prioridad
                 };
                 if (categoriaId) payload.categoria = { categoriaId };
+                
                 await api.actualizarTarea(this.currentEditingId, payload);
                 UIHelpers.showAlert('Tarea actualizada correctamente', 'success');
             } else {
@@ -210,37 +226,34 @@ class TareasManager {
             return;
         }
 
-        container.innerHTML = tareas.map(tarea => {
+        // ✅ RENDERIZAR USANDO WEB COMPONENTS
+        container.innerHTML = '';
+        tareas.forEach(tarea => {
+            // Normalizar categoría
             const tareaCategoriaId = tarea.categoriaId || (tarea.categoria && (tarea.categoria.categoriaId || tarea.categoria._id));
             const categoria = appState.categorias.find(c => c._id === tareaCategoriaId);
-            const isOverdue = UIHelpers.isOverdue(tarea.fecha_vencimiento);
-            const displayName = tarea.nombre || tarea.titulo || 'Sin título';
 
-            return `
-                <div class="task-item ${tarea.estado === 'completada' ? 'completed' : ''}">
-                    <input 
-                        type="checkbox" 
-                        class="task-checkbox" 
-                        ${tarea.estado === 'completada' ? 'checked' : ''}
-                        onchange="TareasManager.toggleTask('${tarea._id}')">
-                    <div class="task-content">
-                        <div class="task-title">${displayName}</div>
-                        ${tarea.descripcion ? `<div class="task-description">${tarea.descripcion}</div>` : ''}
-                        <div class="task-meta">
-                            ${categoria ? `<span class="task-category">${categoria.nombre}</span>` : ''}
-                            <span class="task-date ${isOverdue ? 'overdue' : ''}">
-                                📅 ${UIHelpers.formatDate(tarea.fecha_vencimiento)} (${UIHelpers.getDaysDiff(tarea.fecha_vencimiento)})
-                            </span>
-                            ${tarea.prioridad ? `<span class="task-priority ${tarea.prioridad}">${tarea.prioridad}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="task-actions">
-                        <button class="task-btn" onclick="TareasManager.editTask('${tarea._id}')">✎</button>
-                        <button class="task-btn delete" onclick="TareasManager.deleteTask('${tarea._id}')">🗑</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
+            // Crear objeto de tarea con todos los datos necesarios para el componente
+            const tareaParaComponente = {
+                _id: tarea._id,
+                titulo: tarea.titulo || tarea.nombre,
+                nombre: tarea.nombre || tarea.titulo,
+                descripcion: tarea.descripcion || '',
+                estado: tarea.estado,
+                fecha_vencimiento: tarea.fecha_vencimiento,
+                prioridad: tarea.prioridad,
+                categoria: categoria ? { 
+                    _id: categoria._id,
+                    nombre: categoria.nombre,
+                    color: categoria.color 
+                } : null
+            };
+
+            // Crear el Web Component
+            const taskCard = document.createElement('task-card');
+            taskCard.setAttribute('data-task', JSON.stringify(tareaParaComponente));
+            container.appendChild(taskCard);
+        });
     }
 
     static updateFilterCategories() {
@@ -248,7 +261,6 @@ class TareasManager {
         if (!select) return;
 
         const currentValue = select.value;
-        const options = select.querySelectorAll('option');
 
         // Mantener opción "Todas"
         const allOptions = `<option value="">Todas las categorías</option>`;

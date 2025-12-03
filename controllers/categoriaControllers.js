@@ -84,17 +84,23 @@ exports.actualizarCategoriaPorId = async (req, res, next) => {
 };
 
 
-exports.eliminarCategoriaPorId= async (req, res) => {
+exports.eliminarCategoriaPorId = async (req, res) => {
     try {
         const eliminado = await CategoriaDAO.eliminar(req.params.id);
-        if (!eliminado){
+        if (!eliminado) {
             return res.status(404).json({ mensaje: 'Categoría no encontrada' });
         }
-        res.status(204).send() 
+        // ✅ FIX: Devolver JSON en lugar de res.status(204).send()
+        res.status(200).json({ 
+            mensaje: 'Categoría eliminada correctamente',
+            id: req.params.id 
+        });
     } catch (error) {
-       if (error.name === 'CastError') {
+        if (error.name === 'CastError') {
             return res.status(400).json({ mensaje: 'El ID proporcionado no es válido.' });
         }
-        res.status(500).json({ mensaje: 'Error interno del servidor al eliminar la categoría.' });
+        res.status(500).json({ 
+            mensaje: 'Error interno del servidor al eliminar la categoría.' 
+        });
     }
 };

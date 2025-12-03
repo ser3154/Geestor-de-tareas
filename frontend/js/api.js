@@ -1,7 +1,3 @@
-/* =============================================================================
-   API SERVICE - GESTIÓN DE LLAMADAS AL BACKEND
-   ============================================================================= */
-
 class ApiService {
     constructor() {
         this.baseURL = 'http://localhost:3000/api/v1';
@@ -9,7 +5,7 @@ class ApiService {
     }
 
     /**
-     * Realiza una solicitud HTTP genérica
+     * Realiza una solicitud HTTP genérica con mejor manejo de errores
      */
     async request(endpoint, method = 'GET', data = null) {
         const options = {
@@ -35,12 +31,40 @@ class ApiService {
                 throw new Error('Sesión expirada');
             }
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Error en la solicitud');
+            // ✅ FIX: Manejar respuestas vacías (204 No Content)
+            if (response.status === 204) {
+                return { mensaje: 'Operación exitosa' };
             }
 
-            return await response.json();
+            // ✅ FIX: Verificar si hay contenido antes de parsear
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                // Si no es JSON, intentar leer como texto
+                const text = await response.text();
+                if (!response.ok) {
+                    throw new Error(text || 'Error en la solicitud');
+                }
+                // Si es exitoso pero no es JSON, devolver mensaje genérico
+                return { mensaje: 'Operación exitosa' };
+            }
+
+            // ✅ FIX: Intentar parsear JSON de forma segura
+            let jsonData;
+            try {
+                jsonData = await response.json();
+            } catch (parseError) {
+                console.error('Error al parsear JSON:', parseError);
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud');
+                }
+                return { mensaje: 'Operación exitosa' };
+            }
+
+            if (!response.ok) {
+                throw new Error(jsonData.mensaje || jsonData.error || 'Error en la solicitud');
+            }
+
+            return jsonData;
         } catch (error) {
             console.error('Error en solicitud:', error);
             throw error;

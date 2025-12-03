@@ -38,6 +38,15 @@ class NotasManager {
                 }
             });
         }
+
+        // ✅ NUEVO: Escuchar eventos de los Web Components
+        document.addEventListener('note:edit', (e) => {
+            this.editNote(e.detail.id);
+        });
+
+        document.addEventListener('note:delete', (e) => {
+            this.deleteNote(e.detail.id);
+        });
     }
 
     static newNote() {
@@ -133,31 +142,21 @@ class NotasManager {
             return;
         }
 
-        container.innerHTML = appState.notas.map(nota => {
-            const bgColor = nota.color || '#B8FF00';
-            const fecha = new Date(nota.fecha_creacion);
+        // ✅ RENDERIZAR USANDO WEB COMPONENTS
+        container.innerHTML = '';
+        appState.notas.forEach(nota => {
+            // Crear objeto de nota con todos los datos necesarios
+            const notaParaComponente = {
+                _id: nota._id,
+                contenido: nota.contenido || '',
+                color: nota.color || '#B8FF00',
+                fecha_creacion: nota.fecha_creacion || new Date().toISOString()
+            };
 
-            return `
-                <div class="note-item" style="background-color: ${bgColor};">
-                    <div class="note-content">${this.escapeHtml(nota.contenido)}</div>
-                    <div class="note-date">${UIHelpers.formatDate(fecha)}</div>
-                    <div class="note-actions">
-                        <button class="note-btn" onclick="NotasManager.editNote('${nota._id}')">✎</button>
-                        <button class="note-btn" onclick="NotasManager.deleteNote('${nota._id}')">🗑</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    static escapeHtml(text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, m => map[m]);
+            // Crear el Web Component
+            const noteCard = document.createElement('note-card');
+            noteCard.setAttribute('data-note', JSON.stringify(notaParaComponente));
+            container.appendChild(noteCard);
+        });
     }
 }
