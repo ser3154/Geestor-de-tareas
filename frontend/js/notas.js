@@ -47,6 +47,60 @@ class NotasManager {
         document.addEventListener('note:delete', (e) => {
             this.deleteNote(e.detail.id);
         });
+
+        const grid = document.getElementById('notas-grid');
+        if (grid) {
+            grid.addEventListener('dragstart', (e) => this.handleDragStart(e));
+            grid.addEventListener('dragover', (e) => this.handleDragOver(e));
+            grid.addEventListener('drop', (e) => this.handleDrop(e));
+            grid.addEventListener('dragend', (e) => this.handleDragEnd(e));
+        }
+    
+    }
+    static handleDragStart(e) {
+        // Solo permitir arrastrar si es un note-card
+        if (e.target.tagName.toLowerCase() !== 'note-card') return;
+
+        this.draggedItem = e.target;
+        e.target.classList.add('dragging');
+        
+        // Efecto visual y datos requeridos por Firefox
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'));
+    }
+
+    static handleDragOver(e) {
+        e.preventDefault(); // Necesario para permitir el "drop"
+        e.dataTransfer.dropEffect = 'move';
+
+        const grid = document.getElementById('notas-grid');
+        const targetNode = e.target.closest('note-card');
+
+        if (targetNode && targetNode !== this.draggedItem) {
+            // Lógica de reordenamiento visual instantáneo
+            const bounding = targetNode.getBoundingClientRect();
+            const offset = bounding.y + (bounding.height / 2);
+            
+            if (e.clientY - offset > 0) {
+                targetNode.after(this.draggedItem);
+            } else {
+                targetNode.before(this.draggedItem);
+            }
+        }
+    }
+
+    static handleDrop(e) {
+        e.preventDefault();
+        // Aquí podrías guardar el nuevo orden en el backend si tuvieras un campo "orden"
+        // Por ahora, solo actualizamos el estado local visualmente
+        console.log('📍 Nota movida correctamente');
+    }
+
+    static handleDragEnd(e) {
+        if (this.draggedItem) {
+            this.draggedItem.classList.remove('dragging');
+            this.draggedItem = null;
+        }
     }
 
     static newNote() {
@@ -142,7 +196,7 @@ class NotasManager {
             return;
         }
 
-        // ✅ RENDERIZAR USANDO WEB COMPONENTS
+        // RENDERIZAR USANDO WEB COMPONENTS
         container.innerHTML = '';
         appState.notas.forEach(nota => {
             // Crear objeto de nota con todos los datos necesarios
@@ -156,6 +210,9 @@ class NotasManager {
             // Crear el Web Component
             const noteCard = document.createElement('note-card');
             noteCard.setAttribute('data-note', JSON.stringify(notaParaComponente));
+            noteCard.setAttribute('draggable', 'true'); 
+            // Guardamos el ID para identificarla al arrastrar
+            noteCard.setAttribute('data-id', nota._id);
             container.appendChild(noteCard);
         });
     }

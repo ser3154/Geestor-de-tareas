@@ -109,6 +109,7 @@ body {
     justify-content: space-between;
 }
 
+
 .gap-sm { gap: var(--spacing-sm); }
 .gap-md { gap: var(--spacing-md); }
 .gap-lg { gap: var(--spacing-lg); }
@@ -330,6 +331,31 @@ p {
 
 .card-danger {
     border-left: 4px solid var(--danger);
+}
+
+/* Estilos para Drag and Drop de Notas */
+note-card {
+    cursor: grab;
+    /* Evita que se seleccione el texto al intentar arrastrar */
+    user-select: none; 
+    -webkit-user-select: none;
+    touch-action: none; 
+}
+
+note-card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+    transform: scale(0.95);
+    border: 2px dashed #666;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+note-card:hover {
+    transform: translateY(-2px);
+}
+
+#notas-grid {
+    /* Aseguramos que el grid sea relativo para el posicionamiento */
+    position: relative;
 }
 
 /* =============================================================================

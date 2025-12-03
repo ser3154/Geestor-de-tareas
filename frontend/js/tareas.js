@@ -51,7 +51,7 @@ class TareasManager {
             });
         }
 
-        // ✅ NUEVO: Escuchar eventos de los Web Components
+        // NUEVO: Escuchar eventos de los Web Components
         document.addEventListener('task:toggle', (e) => {
             this.toggleTask(e.detail.id);
         });
@@ -177,24 +177,35 @@ class TareasManager {
     }
 
     static async toggleTask(id) {
-        const tarea = appState.tareas.find(t => t._id === id);
-        if (!tarea) return;
+    const tarea = appState.tareas.find(t => t._id === id);
+    if (!tarea) return;
 
-        const newEstado = tarea.estado === 'completada' ? 'pendiente' : 'completada';
+    const newEstado = tarea.estado === 'completada' ? 'pendiente' : 'completada';
 
-        try {
-            await api.actualizarTarea(id, { estado: newEstado });
+    try {
+        //  Actualizar la tarea en el servidor
+        await api.actualizarTarea(id, { estado: newEstado });
 
-            // Recargar tareas
-            const tareas = await api.obtenerTareas(appState.usuario._id);
-            appState.tareas = tareas;
+        //  Recargar tareas 
+        const tareas = await api.obtenerTareas(appState.usuario._id);
+        appState.tareas = tareas;
 
-            this.renderTareas();
-            DashboardManager.renderDashboard();
+        // NUEVO Recargar logros 
+        // Como completar una tarea puede generar un logro, debemos refrescar esa lista
+        const logros = await api.obtenerLogros(appState.usuario._id);
+        appState.logros = logros; 
 
-        } catch (error) {
-            UIHelpers.showAlert(error.message, 'danger');
+        this.renderTareas();
+        DashboardManager.renderDashboard();
+        
+        
+        if (window.LogrosManager) {
+            LogrosManager.renderLogros();
         }
+
+    } catch (error) {
+        UIHelpers.showAlert(error.message, 'danger');
+    }
     }
 
     static renderTareas() {

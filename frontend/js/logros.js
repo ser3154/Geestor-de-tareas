@@ -11,7 +11,7 @@ class LogrosManager {
             return;
         }
 
-        // ✅ RENDERIZAR USANDO WEB COMPONENTS
+        // RENDERIZAR USANDO WEB COMPONENTS
         container.innerHTML = '';
         appState.logros.forEach(logro => {
             // Determinar si el logro está bloqueado o desbloqueado

@@ -119,7 +119,7 @@ exports.register = async (req, res) => {
             return res.status(400).json({ mensaje: 'Nombre, email y contraseña son obligatorios.' });
         }
 
-        if (typeof password !== 'string' || password.length < 6) {
+        if (typeof password !== 'string' || password.length < 8) {
             return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' });
         }
 
