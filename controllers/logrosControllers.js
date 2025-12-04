@@ -107,7 +107,11 @@ exports.eliminarLogro = async (req, res) => {
             return res.status(404).json({ mensaje: 'Logro no encontrado.' });
         }
         
-        res.status(204).send();
+        // ✅ FIX: Devolver JSON en lugar de res.status(204).send()
+        res.status(200).json({ 
+            mensaje: 'Logro eliminado correctamente',
+            id: req.params.id 
+        });
     } catch (err) {
         if (err.name === 'CastError') {
             return res.status(400).json({ mensaje: 'El ID proporcionado no es válido.' });

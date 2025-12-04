@@ -1,0 +1,370 @@
+/* =============================================================================
+   LAYOUT - ESTRUCTURA PRINCIPAL DEL DASHBOARD
+   ============================================================================= */
+
+.view {
+    display: none;
+}
+
+.view.active {
+    display: flex;
+}
+
+#auth-view {
+    min-height: 100vh;
+}
+
+#main-view {
+    /* No forzar display aquí: la visibilidad de la vista se controla mediante
+       la clase .view y .view.active para evitar que el dashboard sea visible
+       cuando la vista de autenticación está activa. */
+    min-height: 100vh;
+    background-color: var(--light-bg);
+}
+
+/* Aplicar cuando queramos bloquear el scroll del body (por ejemplo, en login) */
+.no-scroll {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* =============================================================================
+   SIDEBAR - NAVEGACIÓN LATERAL
+   ============================================================================= */
+
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, var(--primary-blue) 0%, #1a2d5c 100%);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.mobile-hidden {
+    transform: translateX(-100%);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    cursor: pointer;
+    flex: 1;
+}
+
+.logo-icon {
+    font-size: 32px;
+    background: var(--primary-lime);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-logo h3 {
+    color: white;
+    margin: 0;
+    font-size: var(--font-size-lg);
+}
+
+.sidebar-logo p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+.sidebar-close {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+}
+
+.sidebar-nav {
+    flex: 1;
+    margin-bottom: var(--spacing-lg);
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.sidebar-nav li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link.active {
+    background: var(--primary-lime);
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: var(--font-size-lg);
+    min-width: 24px;
+}
+
+.sidebar-footer {
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* =============================================================================
+   MAIN CONTENT - CONTENIDO PRINCIPAL
+   ============================================================================= */
+
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-header {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    color: var(--text-dark);
+}
+
+#page-title {
+    flex: 1;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.content {
+    flex: 1;
+    padding: var(--spacing-lg);
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* =============================================================================
+   VISTAS - SECCIONES DE CONTENIDO
+   ============================================================================= */
+
+.view-section {
+    display: none;
+    animation: fadeIn 300ms ease-out;
+}
+
+.view-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.section-header .link {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color var(--transition-base);
+}
+
+.section-header .link:hover {
+    color: var(--accent-purple);
+}
+
+/* =============================================================================
+   ALERTAS CONTAINER
+   ============================================================================= */
+
+.alerts-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 2000;
+    max-width: 400px;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 240px;
+    }
+
+    .main-content {
+        margin-left: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 200;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateY(0);
+    }
+
+    .sidebar-close {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0;
+        margin-top: 0;
+    }
+
+    .main-header {
+        padding: var(--spacing-md);
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    #page-title {
+        font-size: var(--font-size-lg);
+    }
+
+    .content {
+        padding: var(--spacing-md);
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .section-header h2 {
+        margin: 0;
+    }
+
+    .alerts-container {
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header {
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+
+    #page-title {
+        width: 100%;
+        font-size: var(--font-size-xl);
+    }
+
+    .content {
+        padding: var(--spacing-sm);
+    }
+}

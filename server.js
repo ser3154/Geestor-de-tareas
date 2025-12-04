@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const Database = require('./config/DataBase');
 
 // Rutas principales
@@ -13,13 +14,32 @@ const rachaRoutes = require('./routes/rachaRoutes');
 // Middleware
 const errorHandler = require('./middleware/errorHandler');
 
+// Middleware CORS
+const cors = (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+};
+
 const server = async () => {
     try {
         const database = new Database();
         await database.conectar();
 
         const app = express();
+        
+        // Middleware
+        app.use(cors);
         app.use(express.json());
+        
+        // Servir archivos estáticos del frontend
+        app.use(express.static(path.join(__dirname, 'frontend')));
 
         // Rutas públicas (sin autenticación)
         app.use('/api/v1/auth', authRoutes);

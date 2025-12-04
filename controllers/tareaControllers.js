@@ -1,6 +1,6 @@
 const TareaDAO = require('../dataAccess/TareaDAO');
 const tareaDAO = new TareaDAO();
-
+const LogroDAO = require('../dataAccess/LogrosDAO');
 const estadosValidos = ['pendiente', 'en_progreso', 'completada'];
 const prioridadesValidas = ['baja', 'media', 'alta'];
 
@@ -98,12 +98,52 @@ exports.actualizarTarea = async (req, res) => {
             return res.status(400).json({ mensaje: 'Si se incluye, el usuarioId debe ser un texto no vacío.' });
         }
 
+        
         const tareaActualizada = await tareaDAO.actualizar(id, datosActualizar);
         if (!tareaActualizada) {
             return res.status(404).json({ mensaje: 'ID de la tarea no encontrado.' });
         }
+
+        if (tareaActualizada.estado === 'completada') {
+            
+            try {
+                const usuarioId = tareaActualizada.usuarioId;
+                
+                // Verificar si el usuario ya tiene el logro de "Primera Tarea"
+                // Obtenemos todos los logros del usuario
+                const logrosUsuario = await LogroDAO.obtenerPorUsuario(usuarioId);
+                
+                // Buscamos si ya existe el logro específico
+                const tieneLogroPrimerTarea = logrosUsuario.some(logro => 
+                    logro.nombre === 'Primera Tarea Completada'
+                );
+                
+                if (!tieneLogroPrimerTarea) {
+                    // Si no lo tiene, se lo creamos
+                    
+                    await LogroDAO.crear(
+                        usuarioId,
+                        'Primera Tarea Completada', 
+                        '¡Has completado tu primera tarea exitosamente!', 
+                        '🏅', 
+                        new Date(),
+                        'Completar 1 tarea' // Criterio
+                    );
+                    console.log(`🏆 Logro otorgado al usuario ${usuarioId}: Primera Tarea Completada`);
+                    
+                }else {
+                    
+                }
+            } catch (logroErr) {
+                console.error('🔍 DEBUG ERROR: Falló la creación del logro:', logroErr);
+                console.error('Error al intentar otorgar logro:', logroErr);
+            }} else {
+            console.log('🔍 DEBUG: No entró al IF de estado. Estado es:', tareaActualizada.estado);
+        }
+        
         res.status(200).json(tareaActualizada);
     } catch (err) {
+        console.error('Error general:', err);
         if (err.name === 'CastError') {
             return res.status(400).json({ mensaje: 'El ID proporcionado no es válido.' });
         }
@@ -120,11 +160,17 @@ exports.eliminarTarea = async (req, res) => {
         if (!eliminado) {
             return res.status(404).json({ mensaje: 'Tarea no encontrada.' });
         }
-        res.status(204).send();
+        res.status(200).json({ 
+            mensaje: 'Tarea eliminada correctamente',
+            id: req.params.id 
+        });
     } catch (err) {
         if (err.name === 'CastError') {
             return res.status(400).json({ mensaje: 'El ID proporcionado no es válido.' });
         }
-        res.status(500).json({ mensaje: 'Error interno del servidor al eliminar la tarea.', error: err.message });
+        res.status(500).json({ 
+            mensaje: 'Error interno del servidor al eliminar la tarea.', 
+            error: err.message 
+        });
     }
 };
