@@ -20,23 +20,6 @@ const server = async () => {
         await database.conectar();
 
         const app = express();
-
-        // ========================================
-        // CORS - PERMITIR PETICIONES DEL NAVEGADOR
-        // ========================================
-        app.use((req, res, next) => {
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-            
-            // Manejar preflight requests
-            if (req.method === 'OPTIONS') {
-                return res.sendStatus(200);
-            }
-            next();
-        });
-
-        // Parsear JSON
         app.use(express.json());
 
         // ========================================
@@ -44,7 +27,7 @@ const server = async () => {
         // ========================================
         app.use(express.static(path.join(__dirname, 'frontend')));
 
-        // Ruta raíz
+        // Ruta principal - servir index.html
         app.get('/', (req, res) => {
             res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
         });
@@ -55,9 +38,9 @@ const server = async () => {
 
         // Rutas públicas (sin autenticación)
         app.use('/api/v1/auth', authRoutes);
-        app.use('/api/v1/usuarios', usuarioRoutes);
 
         // Rutas protegidas (con autenticación)
+        app.use('/api/v1/usuarios', usuarioRoutes);
         app.use('/api/v1/categorias', categoriaRoutes);
         app.use('/api/v1/notas', notasRoutes);
         app.use('/api/v1/logros', logroRoutes);
