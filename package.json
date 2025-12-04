@@ -1,20 +1,12 @@
-﻿{
+{
   "name": "gestordetareas",
   "version": "1.0.0",
-  "description": "Sistema de gestión de tareas con autenticación JWT",
-  "main": "server.js",
+  "description": "",
+  "main": "DataBase.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "test": "node Pruebas.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "tareas",
-    "gestor",
-    "nodejs",
-    "express",
-    "mongodb"
-  ],
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
